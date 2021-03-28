@@ -1,0 +1,4 @@
+// the configured options and settings for wish
+
+#define wish_VERSION_MAJOR @wish_VERSION_MAJOR@
+#define wish_VERSION_MINOR @wish_VERSION_MINOR@
