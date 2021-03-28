@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <decoder.hpp>
 #include <builtin/builtin.hpp>
+#include <path.hpp>
 
 enum EXECUTION_MODES {
     INTERACTIVE = 0,
@@ -16,6 +17,7 @@ class Wish {
 
     Decoder decoder;
     BuiltinModule builtinModule;
+    Path path;
 
     void runInteractive();
     void runBatch();

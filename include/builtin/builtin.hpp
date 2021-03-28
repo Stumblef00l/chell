@@ -8,8 +8,9 @@ class BuiltinModule {
     typedef std::unordered_map<std::string_view, BuiltinCommandInterface*> BuiltinCmdTable;
     BuiltinCmdTable cmdTable;
 public:
-
+    
     BuiltinModule();
     bool isBuiltin(char *cmd);
     void dispatch(char **argv);
+    void resolve(char **argv);
 };

@@ -36,14 +36,23 @@ void Wish::runInteractive() {
             continue;
         } 
         char **argv = decoder.decode(buff);
-        if(argv == NULL)
+        if(argv == NULL) {
+            delete[] argv;
+            delete[] buff;
             continue;
-        else if(builtinModule.isBuiltin(argv[0]))
+        } else if(builtinModule.isBuiltin(argv[0])) {
             builtinModule.dispatch(argv);
-        else
-            dispatch(argv);
-        delete argv;
-        delete buff;
+        } else if(strcmp(argv[0], "path") == 0) {
+            path.changePath(argv);    
+        } else {
+            argv[0] = path.resolvePath(argv[0]);
+            if(argv[0] != NULL)
+                dispatch(argv);
+            else
+                std::cerr << "wish: no executable found\n"; 
+        }
+        delete[] argv;
+        delete[] buff;
     }
 }
 
