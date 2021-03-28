@@ -5,7 +5,7 @@
 
 class BuiltinModule {
 
-    typedef std::unordered_map<std::string, BuiltinCommandInterface*> BuiltinCmdTable;
+    typedef std::unordered_map<std::string_view, BuiltinCommandInterface*> BuiltinCmdTable;
     BuiltinCmdTable cmdTable;
 public:
 

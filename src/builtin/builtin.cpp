@@ -14,9 +14,9 @@ BuiltinModule::BuiltinModule() {
 }
 
 bool BuiltinModule::isBuiltin(char *cmd) {
-    return (cmdTable.find(std::string(cmd)) != BuiltinModule::cmdTable.end());
+    return (cmdTable.find(std::string_view(cmd)) != BuiltinModule::cmdTable.end());
 }
     
 void BuiltinModule::dispatch(char **argv) {
-    cmdTable[std::string(argv[0])]->execute(argv);
+    cmdTable[std::string_view(argv[0])]->execute(argv);
 }
