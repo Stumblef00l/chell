@@ -56,7 +56,7 @@ void Wish::dispatch(char **argv) {
         return;
     int wstatus;
     if(fork() == 0) {
-        execvp(argv[0], argv);
+        execv(argv[0], argv);
         std::cerr << "An error has occured (ERRNO " << errno << ")\n";
     } else
         wait(&wstatus);
