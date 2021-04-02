@@ -37,7 +37,8 @@ void Wish::runBatch() {
     FILE *inputStream = fopen(batchFile, "r");
     if(inputStream == NULL) {
         std::cerr << "wish: No such command file\n";
-        return;
+        errorCode = EXECUTION_ERROR::NOFILE;
+        exit(1);
     }
     while(errorCode == EXECUTION_ERROR::NOERR)
         processInputStream(inputStream);
@@ -50,7 +51,7 @@ void Wish::processInputStream(FILE* inputStream) {
     if((lineLength = getline(&buff, &buffLen, inputStream)) == -1) { 
         std::cerr << "An error has occurred\n";
         errorCode = EXECUTION_ERROR::ERRGETL;
-        return;
+        exit(1);
     }
     char **argv = decoder.decode(buff);
     if(argv == NULL) {

@@ -12,6 +12,7 @@ enum EXECUTION_MODES {
 enum EXECUTION_ERROR {
     NOERR = 0,
     ERRGETL = 1,
+    NOFILE = 2,
     OTHER = 2000
 };
 
