@@ -64,7 +64,6 @@ FetchContent_MakeAvailable(googletest)
 
 file(GLOB TEST_SOURCES
     tests/*.cpp
-    tests/TestBatchMode/*.cpp
 )
 
 set(TEST_LIBS gtest_main)
