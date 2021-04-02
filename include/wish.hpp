@@ -35,4 +35,9 @@ public:
     
     Wish(int mode = EXECUTION_MODES::INTERACTIVE, char *batchFile = NULL);
     void run();
+    
+    // ----- Helper methods, useful for testing -----
+    int getMode();
+    int getError();
+    char* getBatchFile();
 };

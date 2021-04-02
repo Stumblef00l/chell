@@ -47,7 +47,7 @@ void Wish::runBatch() {
 void Wish::processInputStream(FILE* inputStream) {
     char* buff = NULL;
     int lineLength;
-    if((lineLength = getline(&buff, &buffLen, stdin)) == -1) { 
+    if((lineLength = getline(&buff, &buffLen, inputStream)) == -1) { 
         std::cerr << "An error has occurred\n";
         errorCode = EXECUTION_ERROR::ERRGETL;
         return;
@@ -82,3 +82,9 @@ void Wish::dispatch(char **argv) {
     } else
         wait(&wstatus);
 }
+
+// ------ Helper methods for testing ------
+
+int Wish::getMode() { return mode; }
+int Wish::getError() { return errorCode; }
+char* Wish::getBatchFile() { return batchFile; }
