@@ -7,7 +7,9 @@
 #include <wish.hpp>
 
 Wish::Wish(int mode, char *batchFile)
-    : mode(mode), batchFile(batchFile) {}
+    : mode(mode), 
+      batchFile(batchFile), 
+      errorCode(EXECUTION_ERROR::NOERR) {}
 
 void Wish::run() {
     switch(mode) {
@@ -24,40 +26,50 @@ void Wish::run() {
 }
 
 void Wish::runInteractive() {
-    char *buff = NULL;
-    size_t buffLen = 0;
     while(true) {
         std::cout << "wish> ";
-
-        buff = NULL; buffLen = 0;
-        int lineLength;
-        if((lineLength = getline(&buff, &buffLen, stdin)) == -1) { 
-            std::cerr << "An error has occurred\n";
-            continue;
-        } 
-        char **argv = decoder.decode(buff);
-        if(argv == NULL) {
-            delete[] argv;
-            delete[] buff;
-            continue;
-        } else if(builtinModule.isBuiltin(argv[0])) {
-            builtinModule.dispatch(argv);
-        } else if(strcmp(argv[0], "path") == 0) {
-            path.changePath(argv);    
-        } else {
-            argv[0] = path.resolvePath(argv[0]);
-            if(argv[0] != NULL)
-                dispatch(argv);
-            else
-                std::cerr << "wish: no executable found\n"; 
-        }
-        delete[] argv;
-        delete[] buff;
+        errorCode = EXECUTION_ERROR::NOERR;
+        processInputStream(stdin);
     }
 }
 
 void Wish::runBatch() {
-    return;
+    FILE *inputStream = fopen(batchFile, "r");
+    if(inputStream == NULL) {
+        std::cerr << "wish: No such command file\n";
+        return;
+    }
+    while(errorCode == EXECUTION_ERROR::NOERR)
+        processInputStream(inputStream);
+    fclose(inputStream);
+}
+
+void Wish::processInputStream(FILE* inputStream) {
+    char* buff = NULL;
+    int lineLength;
+    if((lineLength = getline(&buff, &buffLen, stdin)) == -1) { 
+        std::cerr << "An error has occurred\n";
+        errorCode = EXECUTION_ERROR::ERRGETL;
+        return;
+    }
+    char **argv = decoder.decode(buff);
+    if(argv == NULL) {
+        delete[] argv;
+        delete[] buff;
+        return;
+    } else if(builtinModule.isBuiltin(argv[0])) {
+        builtinModule.dispatch(argv);
+    } else if(strcmp(argv[0], "path") == 0) {
+        path.changePath(argv);    
+    } else {
+        argv[0] = path.resolvePath(argv[0]);
+        if(argv[0] != NULL)
+            dispatch(argv);
+        else
+            std::cerr << "wish: no executable found\n"; 
+    }
+    delete[] argv;
+    delete[] buff;
 }
 
 void Wish::dispatch(char **argv) {

@@ -9,11 +9,18 @@ enum EXECUTION_MODES {
     BATCH = 1
 };
 
+enum EXECUTION_ERROR {
+    NOERR = 0,
+    ERRGETL = 1,
+    OTHER = 2000
+};
+
 class Wish {
     
     int mode;
     char *batchFile;
     size_t buffLen;
+    int errorCode;
 
     Decoder decoder;
     BuiltinModule builtinModule;
@@ -21,6 +28,7 @@ class Wish {
 
     void runInteractive();
     void runBatch();
+    void processInputStream(FILE* inputStream);
     void dispatch(char** command);
 
 public:
