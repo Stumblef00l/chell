@@ -1,4 +1,4 @@
-ls
+ls tests
 pwd
 exit
 ls
