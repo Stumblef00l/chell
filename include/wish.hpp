@@ -13,6 +13,8 @@ enum EXECUTION_ERROR {
     NOERR = 0,
     ERRGETL = 1,
     NOFILE = 2,
+    NOCMD = 3,
+    BADEXEC = 4,
     OTHER = 2000
 };
 
@@ -22,6 +24,7 @@ class Wish {
     char *batchFile;
     size_t buffLen;
     int errorCode;
+    int processedCount;
 
     Decoder decoder;
     BuiltinModule builtinModule;
@@ -41,4 +44,5 @@ public:
     int getMode();
     int getError();
     char* getBatchFile();
+    int getProcessedCount();
 };

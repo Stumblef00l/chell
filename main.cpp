@@ -13,4 +13,3 @@ int main(int argc, char *argv[]) {
         Wish(EXECUTION_MODES::BATCH, argv[1]).run();
     return 0;
 }
-

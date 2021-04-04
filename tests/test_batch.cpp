@@ -7,6 +7,18 @@ TEST(TestBatchMode, TestBatchInit) {
     Wish wish = Wish(EXECUTION_MODES::BATCH, batchFile);
     ASSERT_EQ(wish.getMode(), EXECUTION_MODES::BATCH) << "Mode is not batch\n";
     ASSERT_EQ(strcmp(wish.getBatchFile(), "tests/test_batch_cmd.in"), 0) << "Incorrect batch command file\n"; 
+}
+
+TEST(TestBatchMode, TestBatchNoFile) {
+    char batchFile[] = "nofile.txt";
+    Wish wish = Wish(EXECUTION_MODES::BATCH, batchFile);
     wish.run();
-    ASSERT_EQ(wish.getError(), EXECUTION_ERROR::NOERR);
+    ASSERT_EQ(wish.getError(), EXECUTION_ERROR::NOFILE) << "File does not exist was expected but file was found\n";
+}
+
+TEST(TestBatchMode, TestExecCount) {
+    char batchFile[] = "tests/test_batch_cmd.in";
+    Wish wish = Wish(EXECUTION_MODES::BATCH, batchFile);
+    wish.run();
+    ASSERT_EQ(wish.getProcessedCount(), 3);
 }

@@ -8,8 +8,10 @@
 
 Wish::Wish(int mode, char *batchFile)
     : mode(mode), 
-      batchFile(batchFile), 
-      errorCode(EXECUTION_ERROR::NOERR) {}
+      batchFile(batchFile),
+      buffLen(0),
+      errorCode(EXECUTION_ERROR::NOERR),
+      processedCount(0) {}
 
 void Wish::run() {
     switch(mode) {
@@ -40,8 +42,10 @@ void Wish::runBatch() {
         errorCode = EXECUTION_ERROR::NOFILE;
         exit(1);
     }
-    while(errorCode == EXECUTION_ERROR::NOERR)
+    while(errorCode == EXECUTION_ERROR::NOERR) {
+        processedCount++;
         processInputStream(inputStream);
+    }
     fclose(inputStream);
 }
 
@@ -58,16 +62,20 @@ void Wish::processInputStream(FILE* inputStream) {
         delete[] argv;
         delete[] buff;
         return;
-    } else if(builtinModule.isBuiltin(argv[0])) {
+    }
+
+    if(builtinModule.isBuiltin(argv[0])) {
         builtinModule.dispatch(argv);
     } else if(strcmp(argv[0], "path") == 0) {
         path.changePath(argv);    
     } else {
         argv[0] = path.resolvePath(argv[0]);
-        if(argv[0] != NULL)
+        if(argv[0] != NULL) {
             dispatch(argv);
-        else
-            std::cerr << "wish: no executable found\n"; 
+        } else {
+            std::cerr << "wish: no such command\n"; 
+            errorCode = EXECUTION_ERROR::NOCMD;
+        }
     }
     delete[] argv;
     delete[] buff;
@@ -79,9 +87,14 @@ void Wish::dispatch(char **argv) {
     int wstatus;
     if(fork() == 0) {
         execv(argv[0], argv);
-        std::cerr << "An error has occured (ERRNO " << errno << ")\n";
-    } else
+        std::cerr << "wish: An error has occured (ERRNO " << errno << ")\n";
+    } else {
         wait(&wstatus);
+        if(!WIFEXITED(wstatus)) {
+            std::cerr << "wish: Error while executing process\n";
+            errorCode = EXECUTION_ERROR::BADEXEC;
+        }
+    }
 }
 
 // ------ Helper methods for testing ------
@@ -89,3 +102,4 @@ void Wish::dispatch(char **argv) {
 int Wish::getMode() { return mode; }
 int Wish::getError() { return errorCode; }
 char* Wish::getBatchFile() { return batchFile; }
+int Wish::getProcessedCount() { return processedCount; }
