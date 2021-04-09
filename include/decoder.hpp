@@ -3,5 +3,5 @@
 class Decoder {
 
 public:
-    char** decode(char *line);
+    static char** decode(char *line);
 };

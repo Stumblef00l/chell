@@ -1,6 +1,8 @@
 #include <iostream>
 #include <builtin/exit.hpp>
 
+extern bool SUPPRESS_EXIT_SYSCALL;
+
 void ExitInterface::execute(char **argv) {
     int argc = countArgs(argv);
     if(argc == 0)
@@ -9,5 +11,6 @@ void ExitInterface::execute(char **argv) {
         std::cerr << "wish: error\n";
         return;
     }
-    exit(0);
+    if(!SUPPRESS_EXIT_SYSCALL)
+        exit(0);
 }

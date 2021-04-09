@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <wish.hpp>
 
+extern bool SUPPRESS_EXIT_SYSCALL;
+
 Wish::Wish(int mode, char *batchFile)
     : mode(mode), 
       batchFile(batchFile),
@@ -32,6 +34,7 @@ void Wish::runInteractive() {
         std::cout << "wish> ";
         errorCode = EXECUTION_ERROR::NOERR;
         processInputStream(stdin);
+        processedCount++;
     }
 }
 
@@ -40,11 +43,16 @@ void Wish::runBatch() {
     if(inputStream == NULL) {
         std::cerr << "wish: No such command file\n";
         errorCode = EXECUTION_ERROR::NOFILE;
+        if(SUPPRESS_EXIT_SYSCALL)
+            return;
         exit(1);
     }
-    while(errorCode == EXECUTION_ERROR::NOERR) {
-        processedCount++;
+    while(true) {
         processInputStream(inputStream);
+        if(errorCode == EXECUTION_ERROR::NOERR)
+            processedCount++;
+        else
+            break;
     }
     fclose(inputStream);
 }
@@ -52,12 +60,13 @@ void Wish::runBatch() {
 void Wish::processInputStream(FILE* inputStream) {
     char* buff = NULL;
     int lineLength;
-    if((lineLength = getline(&buff, &buffLen, inputStream)) == -1) { 
-        std::cerr << "An error has occurred\n";
-        errorCode = EXECUTION_ERROR::ERRGETL;
+    if((lineLength = getline(&buff, &buffLen, inputStream)) == -1) {
+        errorCode = EXECUTION_ERROR::EOEXEC;
+        if(SUPPRESS_EXIT_SYSCALL)
+            return;
         exit(1);
     }
-    char **argv = decoder.decode(buff);
+    char **argv = Decoder::decode(buff);
     if(argv == NULL) {
         delete[] argv;
         delete[] buff;

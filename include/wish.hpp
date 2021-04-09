@@ -15,6 +15,7 @@ enum EXECUTION_ERROR {
     NOFILE = 2,
     NOCMD = 3,
     BADEXEC = 4,
+    EOEXEC = 5,
     OTHER = 2000
 };
 
@@ -26,7 +27,6 @@ class Wish {
     int errorCode;
     int processedCount;
 
-    Decoder decoder;
     BuiltinModule builtinModule;
     Path path;
 

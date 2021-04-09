@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 # Set the project name
-project(wish VERSION 0.2)
+project(wish VERSION 0.3)
 
 # Header file for version
 configure_file(config.h.in config.h)
@@ -25,7 +25,7 @@ set(CFLAGS "-g" "-Wall" "-Werror")
 set(STDLIBS)
 
 # add executable
-add_executable(wish main.cpp ${SOURCES})
+add_executable(wish main.cpp config.build.cpp ${SOURCES})
 
 # Configured files are written into the binary tree, must add into the include path
 target_include_directories(wish PUBLIC ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
@@ -41,16 +41,6 @@ set_target_properties(wish
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
-
-# ---- Scripts -----
-
-add_executable(tryexec ${PROJECT_SOURCE_DIR}/scripts/tryexec.cpp)
-set_target_properties(tryexec 
-    PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/scripts/bin
-)
-target_compile_options(wish PUBLIC ${CFLAGS})
-target_link_libraries(wish PUBLIC ${STDLIBS})
 
 # ---- Tests -------
 

@@ -3,10 +3,10 @@
 #include <string.h>
 
 TEST(TestBatchMode, TestBatchInit) {
-    char batchFile[] = "tests/test_batch_cmd.in";
+    char batchFile[] = "test_batch_cmd.in";
     Wish wish = Wish(EXECUTION_MODES::BATCH, batchFile);
     ASSERT_EQ(wish.getMode(), EXECUTION_MODES::BATCH) << "Mode is not batch\n";
-    ASSERT_EQ(strcmp(wish.getBatchFile(), "tests/test_batch_cmd.in"), 0) << "Incorrect batch command file\n"; 
+    ASSERT_EQ(strcmp(wish.getBatchFile(), "test_batch_cmd.in"), 0) << "Incorrect batch command file\n"; 
 }
 
 TEST(TestBatchMode, TestBatchNoFile) {
@@ -17,8 +17,9 @@ TEST(TestBatchMode, TestBatchNoFile) {
 }
 
 TEST(TestBatchMode, TestExecCount) {
-    char batchFile[] = "tests/test_batch_cmd.in";
+    char batchFile[] = "test_batch_cmd.in";
     Wish wish = Wish(EXECUTION_MODES::BATCH, batchFile);
     wish.run();
-    ASSERT_EQ(wish.getProcessedCount(), 3);
+    ASSERT_EQ(wish.getError(), EXECUTION_ERROR::EOEXEC);
+    ASSERT_EQ(wish.getProcessedCount(), 2);
 }

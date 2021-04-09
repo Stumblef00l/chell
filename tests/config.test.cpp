@@ -1,0 +1,1 @@
+bool SUPPRESS_EXIT_SYSCALL = 1;
