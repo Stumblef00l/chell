@@ -1,5 +1,4 @@
 wish
 build/
-scripts/bin/
 .vscode/
 tests/test_wish
