@@ -22,7 +22,7 @@ enum EXECUTION_ERROR {
 class Wish {
     
     int mode;
-    char *batchFile;
+    const char *batchFile;
     size_t buffLen;
     int errorCode;
     int processedCount;
@@ -37,12 +37,12 @@ class Wish {
 
 public:
     
-    Wish(int mode = EXECUTION_MODES::INTERACTIVE, char *batchFile = NULL);
+    Wish(int mode = EXECUTION_MODES::INTERACTIVE, const char *batchFile = NULL);
     void run();
     
     // ----- Helper methods, useful for testing -----
     int getMode();
     int getError();
-    char* getBatchFile();
+    const char* getBatchFile();
     int getProcessedCount();
 };

@@ -8,7 +8,7 @@
 
 extern bool SUPPRESS_EXIT_SYSCALL;
 
-Wish::Wish(int mode, char *batchFile)
+Wish::Wish(int mode, const char *batchFile)
     : mode(mode), 
       batchFile(batchFile),
       buffLen(0),
@@ -110,5 +110,5 @@ void Wish::dispatch(char **argv) {
 
 int Wish::getMode() { return mode; }
 int Wish::getError() { return errorCode; }
-char* Wish::getBatchFile() { return batchFile; }
+const char* Wish::getBatchFile() { return batchFile; }
 int Wish::getProcessedCount() { return processedCount; }
