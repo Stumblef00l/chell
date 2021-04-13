@@ -1,4 +1,5 @@
 wish
+wish_debug
 build/
 .vscode/
 tests/test_wish
