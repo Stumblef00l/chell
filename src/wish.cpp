@@ -61,33 +61,41 @@ void Wish::processInputStream(FILE* inputStream) {
     char* buff = NULL;
     int lineLength;
     if((lineLength = getline(&buff, &buffLen, inputStream)) == -1) {
+        free(buff);
         errorCode = EXECUTION_ERROR::EOEXEC;
         if(SUPPRESS_EXIT_SYSCALL)
             return;
         exit(1);
     }
+    
     char **argv = Decoder::decode(buff);
-    if(argv == NULL) {
-        delete[] argv;
-        delete[] buff;
+    free(buff);
+    if(argv == NULL)
         return;
-    }
-
+    
     if(builtinModule.isBuiltin(argv[0])) {
         builtinModule.dispatch(argv);
     } else if(strcmp(argv[0], "path") == 0) {
         path.changePath(argv);    
     } else {
-        argv[0] = path.resolvePath(argv[0]);
-        if(argv[0] != NULL) {
+        char* resolvedPath = path.resolvePath(argv[0]);
+        if(resolvedPath != NULL) {
+            free(argv[0]);
+            argv[0] = resolvedPath;
             dispatch(argv);
         } else {
             std::cerr << "wish: no such command\n"; 
             errorCode = EXECUTION_ERROR::NOCMD;
         }
     }
-    delete[] argv;
-    delete[] buff;
+    
+    // Memory cleanup
+    int argIdx = 0;
+    while(argv[argIdx] != NULL) {
+        free(argv[argIdx]);
+        argIdx++;
+    }
+    free(argv);
 }
 
 void Wish::dispatch(char **argv) {

@@ -19,25 +19,35 @@ file(GLOB SOURCES
 )
 
 # Compiler flags
-set(CFLAGS "-g" "-Wall" "-Werror")
+set(MAINFLAGS "-O" "-Wall" "-Werror")
+set(DEBUGFLAGS "-g" "-Wall" "-Werror")
 
 # C++ Standard libraries
 set(STDLIBS)
 
 # add executable
 add_executable(wish main.cpp config.build.cpp ${SOURCES})
+add_executable(wish_debug main.cpp config.build.cpp ${SOURCES})
 
 # Configured files are written into the binary tree, must add into the include path
 target_include_directories(wish PUBLIC ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(wish_debug PUBLIC ${PROJECT_BINARY_DIR} ${PROJECT_SOURCE_DIR}/include)
 
 # Compiler flags
-target_compile_options(wish PUBLIC ${CFLAGS})
+target_compile_options(wish PUBLIC ${MAINFLAGS})
+target_compile_options(wish_debug PUBLIC ${DEBUGFLAGS})
 
 # Link libraries
 target_link_libraries(wish PUBLIC ${STDLIBS})
+target_link_libraries(wish_debug PUBLIC ${STDLIBS})
 
 # Output directory for binary
 set_target_properties(wish
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+set_target_properties(wish_debug
     PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
 )

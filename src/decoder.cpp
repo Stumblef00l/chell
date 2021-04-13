@@ -1,5 +1,6 @@
 #include <decoder.hpp>
 #include <string.h>
+#include <stdlib.h>
 
 char** Decoder::decode(char *line) {
     int argc = 1;
@@ -9,14 +10,20 @@ char** Decoder::decode(char *line) {
             argc++;
         prev = line[i];
     }
-    char **argv = new char*[sizeof(char*) * argc];
+    char **argv = NULL;
+    if(argc == 0)
+        return argv;
+    argv = (char**)malloc(sizeof(char*) * argc);
     int argIdx = 0;
     while(true) {
-        argv[argIdx] = strsep(&line, " \n");
-        if(argv[argIdx] == NULL)
+        char* newArg = strsep(&line, " \n");
+        if(newArg == NULL)
             break;
-        else if(strlen(argv[argIdx]) > 0)
+        else if(strlen(newArg) > 0) {
+            argv[argIdx] = (char*)malloc(sizeof(char) * (strlen(newArg) + 1));
+            strcpy(argv[argIdx], newArg);           
             argIdx++;
+        }
     }
     return argv;
 }

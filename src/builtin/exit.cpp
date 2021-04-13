@@ -11,6 +11,9 @@ void ExitInterface::execute(char **argv) {
         std::cerr << "wish: error\n";
         return;
     }
-    if(!SUPPRESS_EXIT_SYSCALL)
+    if(!SUPPRESS_EXIT_SYSCALL) {
+        free(argv[0]);
+        free(argv);
         exit(0);
+    }
 }
