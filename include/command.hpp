@@ -1,9 +1,11 @@
 #pragma once
 #include <iostream>
+#pragma once
+#include <iostream>
 
 struct Command {
     char **argv;
-    FILE* outputStream;
+    char* outFile;
 
-    Command(char **argv, FILE* outputStream = stdout);
+    Command(char **argv, char* outFile = NULL);
 };

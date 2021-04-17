@@ -1,5 +1,5 @@
 #include <cstddef>
-#include <builtin/command.hpp>
+#include <builtin/interface.hpp>
 
 int BuiltinCommandInterface::countArgs(char **argv) {
     int argc = 0;

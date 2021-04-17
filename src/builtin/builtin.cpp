@@ -1,6 +1,7 @@
 #include <builtin/builtin.hpp>
 #include <builtin/exit.hpp>
 #include <builtin/cd.hpp>
+#include <unistd.h>
 
 // Define the command interfaces here
 namespace BuiltinInterfaces {
@@ -14,7 +15,7 @@ BuiltinModule::BuiltinModule() {
 }
 
 bool BuiltinModule::isBuiltin(Command* cmd) {
-    if(cmd->outputStream != NULL)
+    if(cmd->outFile != NULL)
         return false;
     return (cmdTable.find(std::string_view(cmd->argv[0])) != BuiltinModule::cmdTable.end());
 }

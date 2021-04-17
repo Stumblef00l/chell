@@ -33,7 +33,7 @@ class Wish {
     void runInteractive();
     void runBatch();
     void processInputStream(FILE* inputStream);
-    void dispatch(char** command);
+    void dispatch(Command* command);
 
 public:
     

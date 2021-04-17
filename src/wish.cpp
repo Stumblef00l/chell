@@ -2,6 +2,9 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
 #include <wish.hpp>
@@ -73,38 +76,50 @@ void Wish::processInputStream(FILE* inputStream) {
     if(cmds == NULL)
         return;
     
-    if(builtinModule.isBuiltin(cmds[0])) {
-        builtinModule.dispatch(argv);
-    } else if(strcmp(argv[0], "path") == 0) {
-        path.changePath(argv);    
-    } else {
-        char* resolvedPath = path.resolvePath(argv[0]);
-        if(resolvedPath != NULL) {
-            free(argv[0]);
-            argv[0] = resolvedPath;
-            dispatch(argv);
+    int idx = 0;
+    while(cmds[idx] != NULL) {
+        if(builtinModule.isBuiltin(cmds[idx])) {
+            builtinModule.dispatch(cmds[idx]);
+        } else if(strcmp(cmds[idx]->argv[0], "path") == 0) {
+            if(cmds[idx]->outFile != NULL) {
+                std::cerr << "wish: incorrect use of path\n";
+                errorCode = EXECUTION_ERROR::NOCMD;
+            }
+            path.changePath(cmds[idx]->argv);    
         } else {
-            std::cerr << "wish: no such command\n"; 
-            errorCode = EXECUTION_ERROR::NOCMD;
+            char* resolvedPath = path.resolvePath(cmds[idx]->argv[0]);
+            if(resolvedPath != NULL) {
+                delete cmds[idx]->argv[0];
+                cmds[idx]->argv[0] = resolvedPath;
+                dispatch(cmds[idx]);
+            } else {
+                std::cerr << "wish: no such command\n"; 
+                errorCode = EXECUTION_ERROR::NOCMD;
+            }
         }
+        idx++;
     }
     
-    // Memory cleanup
-    int argIdx = 0;
-    while(argv[argIdx] != NULL) {
-        free(argv[argIdx]);
-        argIdx++;
-    }
-    free(argv);
+    delete cmds;
 }
 
-void Wish::dispatch(char **argv) {
-    if(argv == NULL)
+void Wish::dispatch(Command* cmd) {
+    if(cmd == NULL)
         return;
     int wstatus;
     if(fork() == 0) {
-        execv(argv[0], argv);
-        std::cerr << "wish: An error has occured (ERRNO " << errno << ")\n";
+        int fdout = -1;
+        if(cmd->outFile != NULL) {
+            fdout = open(cmd->outFile, O_CREAT | O_WRONLY);
+            if(fdout == -1) {
+                std::cerr << "wish: Error while executing " << (std::string_view(cmd->argv[0])) << "(ERRNO " << errno << ")\n";
+                exit(1);
+            }
+            dup2(fdout, STDOUT_FILENO);
+        }
+        execv(cmd->argv[0], cmd->argv);
+        std::cerr << "wish: Error while executing " << (std::string_view(cmd->argv[0])) << "(ERRNO " << errno << ")\n";
+        exit(1);
     } else {
         wait(&wstatus);
         if(!WIFEXITED(wstatus)) {
@@ -112,6 +127,7 @@ void Wish::dispatch(char **argv) {
             errorCode = EXECUTION_ERROR::BADEXEC;
         }
     }
+    delete cmd;
 }
 
 // ------ Helper methods for testing ------

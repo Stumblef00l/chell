@@ -1,3 +1,3 @@
 #include <command.hpp>
 
-Command::Command(char **argv, FILE *outputStream = stdout): argv(argv), outputStream(outputStream) {}
+Command::Command(char **argv, char* outFile = NULL): argv(argv), outFile(outFile) {}

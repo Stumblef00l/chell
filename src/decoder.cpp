@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+
 Command** Decoder::decode(char *line) {
     if(line == NULL)
         return NULL;
@@ -79,19 +80,14 @@ Command* Decoder::parseSingleCommand(char *line) {
             delete argv;
             return NULL;
         }
-        FILE *outStream = fopen(outFile, "w+");
-        if(outStream == NULL) {
-            fclose(outStream);
-            freeParsedArgs(argv);
-            delete argv;
-            return NULL;
-        }
-        parsedCmd = new Command(argv, outStream);
+        char *outFileCopy = new char[strlen(outFile) + 1];
+        strcpy(outFileCopy, outFile);
+        parsedCmd = new Command(argv, outFileCopy);
     } else {
         char **argv = parseWhitespaces(line);
         if(argv == NULL)
             return NULL;
-        parsedCmd = new Command(argv, stdout);
+        parsedCmd = new Command(argv);
     }
     return parsedCmd;
 }
