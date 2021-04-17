@@ -3,8 +3,8 @@
 
 extern bool SUPPRESS_EXIT_SYSCALL;
 
-void ExitInterface::execute(char **argv) {
-    int argc = countArgs(argv);
+void ExitInterface::execute(Command* cmd) {
+    int argc = countArgs(cmd->argv);
     if(argc == 0)
         return;
     if(argc > 1) {
@@ -12,8 +12,13 @@ void ExitInterface::execute(char **argv) {
         return;
     }
     if(!SUPPRESS_EXIT_SYSCALL) {
-        free(argv[0]);
-        free(argv);
+        int idx = 0;
+        while(cmd->argv[idx] != NULL) {
+            delete cmd->argv[idx];
+            idx++;
+        }
+        delete cmd->argv;
+        delete cmd;
         exit(0);
     }
 }

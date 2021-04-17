@@ -1,5 +1,5 @@
 #pragma once
-#include <builtin/command.hpp>
+#include <builtin/interface.hpp>
 
 class Path {
     char **path;

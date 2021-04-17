@@ -1,9 +1,9 @@
 #pragma once
 #include <cstddef>
-#include <builtin/command.hpp>
+#include <builtin/interface.hpp>
 
 class ChangeDirectoryInterface : public BuiltinCommandInterface {
 
 public:
-    void execute(char **argv);
+    void execute(Command* cmd);
 };

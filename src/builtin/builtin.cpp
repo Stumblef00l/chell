@@ -13,10 +13,12 @@ BuiltinModule::BuiltinModule() {
     cmdTable["cd"] = &BuiltinInterfaces::changeDirectoryInterface;
 }
 
-bool BuiltinModule::isBuiltin(char *cmd) {
-    return (cmdTable.find(std::string_view(cmd)) != BuiltinModule::cmdTable.end());
+bool BuiltinModule::isBuiltin(Command* cmd) {
+    if(cmd->outputStream != NULL)
+        return false;
+    return (cmdTable.find(std::string_view(cmd->argv[0])) != BuiltinModule::cmdTable.end());
 }
     
-void BuiltinModule::dispatch(char **argv) {
-    cmdTable[std::string_view(argv[0])]->execute(argv);
+void BuiltinModule::dispatch(Command* cmd) {
+    cmdTable[std::string_view(cmd->argv[0])]->execute(cmd);
 }

@@ -4,10 +4,10 @@
 #include <path.hpp>
 
 Path::Path() {
-    path = (char**)malloc(sizeof(char*) * 3);
-    path[0] = (char*)malloc(5 * sizeof(char));
+    path = new char*[3];
+    path[0] = new char[strlen("/bin") + 1];
     strcpy(path[0], "/bin");
-    path[1] = (char*)malloc(9 * sizeof(char));
+    path[1] = new char[strlen("/usr/bin") + 1];
     strcpy(path[1], "/usr/bin");
     path[2] = NULL;
 }
@@ -16,7 +16,9 @@ char* Path::resolvePath(char *cmd) {
     int ind = 0;
     char *binpth = NULL;
     while(path[ind] != NULL) {
-        binpth = (char*)realloc(binpth, sizeof(char) * (strlen(path[ind]) + strlen(cmd) + 2));   
+        if(binpth != NULL)
+            delete binpth;
+        binpth = new char[strlen(path[ind]) + strlen(cmd) + 2];   
         strcpy(binpth, path[ind]);
         strcat(binpth, "/");
         strcat(binpth, cmd);
@@ -24,7 +26,8 @@ char* Path::resolvePath(char *cmd) {
             return binpth;
         ind++;
     }
-    free(binpth);
+    if(binpth != NULL)
+        delete binpth;
     return NULL;
 }
 
@@ -33,18 +36,18 @@ void Path::changePath(char **args) {
     // Memory cleanup for path
     int argc = 0;
     while(path[argc] != NULL) {
-        free(path[argc]);
+        delete path[argc];
         argc++;
     }
-    free(path);
+    delete path;
 
     argc = 0;
     while(args[argc] != NULL) 
         argc++;
-    path = (char**)malloc(sizeof(char*) * argc);
+    path = new char*[argc];
     argc = 1;
     while(args[argc] != NULL) {
-        path[argc - 1] = (char*)malloc(sizeof(char) * (strlen(args[argc]) + 1));
+        path[argc - 1] = new char[strlen(args[argc]) + 1];
         strcpy(path[argc - 1], args[argc]);
         argc++;
     }

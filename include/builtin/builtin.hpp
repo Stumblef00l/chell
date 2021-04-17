@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 #include <unordered_map>
-#include <builtin/command.hpp>
+#include <builtin/interface.hpp>
+#include <command.hpp>
 
 class BuiltinModule {
 
@@ -10,7 +11,6 @@ class BuiltinModule {
 public:
     
     BuiltinModule();
-    bool isBuiltin(char *cmd);
-    void dispatch(char **argv);
-    void resolve(char **argv);
+    bool isBuiltin(Command* cmd);
+    void dispatch(Command* argv);
 };

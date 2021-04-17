@@ -68,12 +68,12 @@ void Wish::processInputStream(FILE* inputStream) {
         exit(1);
     }
     
-    char **argv = Decoder::decode(buff);
+    Command** cmds = Decoder::decode(buff);
     free(buff);
-    if(argv == NULL)
+    if(cmds == NULL)
         return;
     
-    if(builtinModule.isBuiltin(argv[0])) {
+    if(builtinModule.isBuiltin(cmds[0])) {
         builtinModule.dispatch(argv);
     } else if(strcmp(argv[0], "path") == 0) {
         path.changePath(argv);    
