@@ -110,7 +110,7 @@ void Wish::dispatch(Command* cmd) {
     if(fork() == 0) {
         int fdout = -1;
         if(cmd->outFile != NULL) {
-            fdout = open(cmd->outFile, O_CREAT | O_WRONLY);
+            fdout = open(cmd->outFile, O_CREAT | O_WRONLY, S_IRWXG | S_IRWXU);
             if(fdout == -1) {
                 std::cerr << "wish: Error while executing " << (std::string_view(cmd->argv[0])) << "(ERRNO " << errno << ")\n";
                 exit(1);
