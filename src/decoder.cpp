@@ -17,7 +17,7 @@ Command** Decoder::decode(char *line) {
     while(rawCmds[cmdCt] != NULL)
         cmdCt++;
     if(cmdCt == 0) {
-        delete rawCmds;
+        delete[] rawCmds;
         return NULL;
     }
 
@@ -28,11 +28,12 @@ Command** Decoder::decode(char *line) {
         parsedCommands[cmdIdx] = parseSingleCommand(rawCmds[cmdIdx]);
         if(parsedCommands[cmdIdx] == NULL) {
             freeParsedCommands(parsedCommands);
-            delete rawCmds;
+            delete[] rawCmds;
             return NULL;
         }
         cmdIdx++;
     }
+    delete[] rawCmds;
     parsedCommands[cmdIdx] = NULL;
     return parsedCommands;
 }
@@ -77,18 +78,27 @@ Command* Decoder::parseSingleCommand(char *line) {
             return NULL;
         char **parsedOutfile = parseWhitespaces(outFile);
         if(parsedOutfile == NULL || parsedOutfile[0] == NULL || parsedOutfile[1] != NULL) {
+            if(parsedOutfile != NULL) {
+                int idx = 0;
+                while(parsedOutfile[idx] != NULL) {
+                    delete[] parsedOutfile[idx];
+                    idx++;
+                }
+                delete[] parsedOutfile;
+            }
             freeParsedArgs(argv);
-            delete argv;
+            delete[] argv;
             return NULL;
         }
         outFile = parsedOutfile[0];
+        delete[] parsedOutfile;
         parsedCmd = new Command(argv, outFile);
     } else {
         char **argv = parseWhitespaces(line);
         if(argv == NULL)
             return NULL;
         parsedCmd = new Command(argv);
-     }
+    }
     return parsedCmd;
 }
 
@@ -135,6 +145,7 @@ void Decoder::freeParsedCommands(Command** parsedCommands) {
         delete parsedCommands[idx];
         idx++;
     }
+    delete[] parsedCommands;
 }
 
 void Decoder::freeParsedArgs(char** argv) {

@@ -81,17 +81,20 @@ void Wish::processInputStream(FILE* inputStream) {
             builtinModule.dispatch(cmds[idx]);
         } else if(strcmp(cmds[idx]->argv[0], "path") == 0) {
             if(cmds[idx]->outFile != NULL) {
+                delete cmds[idx];
                 std::cerr << "wish: incorrect use of path\n";
                 errorCode = EXECUTION_ERROR::NOCMD;
+                continue;
             }
-            path.changePath(cmds[idx]->argv);    
+            path.changePath(cmds[idx]->argv);
         } else {
             char* resolvedPath = path.resolvePath(cmds[idx]->argv[0]);
             if(resolvedPath != NULL) {
-                delete cmds[idx]->argv[0];
+                delete[] cmds[idx]->argv[0];
                 cmds[idx]->argv[0] = resolvedPath;
                 dispatch(cmds[idx]);
             } else {
+                delete cmds[idx];
                 std::cerr << "wish: no such command\n"; 
                 errorCode = EXECUTION_ERROR::NOCMD;
             }
@@ -99,7 +102,7 @@ void Wish::processInputStream(FILE* inputStream) {
         idx++;
     }
     
-    delete cmds;
+    delete[] cmds;
 }
 
 void Wish::dispatch(Command* cmd) {
@@ -126,6 +129,8 @@ void Wish::dispatch(Command* cmd) {
             errorCode = EXECUTION_ERROR::BADEXEC;
         }
     }
+
+    // Free the command's memory
     delete cmd;
 }
 

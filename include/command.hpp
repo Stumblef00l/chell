@@ -8,4 +8,5 @@ struct Command {
     char* outFile;
 
     Command(char **argv, char* outFile = NULL);
+    ~Command();
 };

@@ -17,7 +17,7 @@ char* Path::resolvePath(char *cmd) {
     char *binpth = NULL;
     while(path[ind] != NULL) {
         if(binpth != NULL)
-            delete binpth;
+            delete[] binpth;
         binpth = new char[strlen(path[ind]) + strlen(cmd) + 2];   
         strcpy(binpth, path[ind]);
         strcat(binpth, "/");
@@ -27,7 +27,7 @@ char* Path::resolvePath(char *cmd) {
         ind++;
     }
     if(binpth != NULL)
-        delete binpth;
+        delete[] binpth;
     return NULL;
 }
 
@@ -36,10 +36,10 @@ void Path::changePath(char **args) {
     // Memory cleanup for path
     int argc = 0;
     while(path[argc] != NULL) {
-        delete path[argc];
+        delete[] path[argc];
         argc++;
     }
-    delete path;
+    delete[] path;
 
     argc = 0;
     while(args[argc] != NULL) 

@@ -12,12 +12,6 @@ void ExitInterface::execute(Command* cmd) {
         return;
     }
     if(!SUPPRESS_EXIT_SYSCALL) {
-        int idx = 0;
-        while(cmd->argv[idx] != NULL) {
-            delete cmd->argv[idx];
-            idx++;
-        }
-        delete cmd->argv;
         delete cmd;
         exit(0);
     }

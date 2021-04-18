@@ -22,4 +22,5 @@ bool BuiltinModule::isBuiltin(Command* cmd) {
     
 void BuiltinModule::dispatch(Command* cmd) {
     cmdTable[std::string_view(cmd->argv[0])]->execute(cmd);
+    delete cmd;
 }
