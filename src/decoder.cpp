@@ -71,24 +71,24 @@ Command* Decoder::parseSingleCommand(char *line) {
     Command *parsedCmd = NULL;
     if(foundRedirection) {
         char *cmd = strsep(&line, ">");
-        char *outFile = strsep(&line, ">");
+        char *outFile = line;
         char **argv = parseWhitespaces(cmd);
         if(argv == NULL)
             return NULL;
-        if(checkWhitespaces(outFile) || strlen(outFile) == 0) {
+        char **parsedOutfile = parseWhitespaces(outFile);
+        if(parsedOutfile == NULL || parsedOutfile[0] == NULL || parsedOutfile[1] != NULL) {
             freeParsedArgs(argv);
             delete argv;
             return NULL;
         }
-        char *outFileCopy = new char[strlen(outFile) + 1];
-        strcpy(outFileCopy, outFile);
-        parsedCmd = new Command(argv, outFileCopy);
+        outFile = parsedOutfile[0];
+        parsedCmd = new Command(argv, outFile);
     } else {
         char **argv = parseWhitespaces(line);
         if(argv == NULL)
             return NULL;
         parsedCmd = new Command(argv);
-    }
+     }
     return parsedCmd;
 }
 
