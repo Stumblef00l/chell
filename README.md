@@ -34,7 +34,7 @@ The shell provides three commands for managing the shell:
 
 1. **cd**: `Usage: cd "path/to/dest/directory"` Like the original UNIX command `cd`, you can use this to change the current active directory of the shell.
 2. **exit**: `Usage: exit` To stop the shell's execution, simply type `exit` without any arguments into the shell.
-3. **path** `Usage: path [path1 | path2 | path3 | ...]` Similar to the original UNIX command `path`. Use this to edit the default command path for the shell to look for executables in. If left empty, `path` is set to `NULL` and you won't be able to execute any commands except the shell's inbuilt commands.
+3. **path** `Usage: path [path1 | path2 | path3 | ...]` Similar to the original UNIX `path`. Use this to edit the default command path for the shell to look for executables in. If left empty, `path` is set to `NULL` and you won't be able to execute any commands except the shell's inbuilt commands.
 
 
 ## Testing
