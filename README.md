@@ -26,7 +26,7 @@ After building, the executable `wish` should appear in your project root directo
 ### Modes
 
 1. **Interactive Mode**: Simply run `./wish` in the project root directory, to start the shell in interactive mode. The shell will process commands one by one based on your input in this mode.
-2. **Batch Mode**: Use this mode if you have already have a list of commands that you want to execute written down in another script file. To start in batch mode type `./wish path/to/batch/file` in the project root directory.
+2. **Batch Mode**: Use this mode if you already have a list of commands that you want to execute written down in another script file. To start in batch mode type `./wish path/to/batch/file` in the project root directory.
 
 ### Inbuilt Commands
 
